@@ -1,8 +1,8 @@
-\documentclass{article}
+\documentclass[12pt]{article}
 \usepackage{arxiv}
 
 \usepackage[utf8]{inputenc}
-\usepackage[english, russian]{babel}
+\usepackage[english]{babel}
 \usepackage[T1]{fontenc}
 \usepackage{url}
 \usepackage{booktabs}
@@ -11,37 +11,86 @@
 \usepackage{microtype}
 \usepackage{lipsum}
 \usepackage{graphicx}
+\usepackage{algpseudocode}
+\usepackage{color}
 \usepackage{natbib}
 \usepackage{doi}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{hyperref}
+\renewcommand{\epsilon}{\varepsilon}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand{\divrus}{\mathop{\raisebox{-2pt}{\vdots}}}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\newcommand{\RR}{\mathcal{R}}
+\newcommand{\PP}{\mathcal{P}}
+\newcommand{\NPP}{\mathcal{NP}}
+\def \SS{\mathcal{S}_{++}}
+\newcommand{\MM}{\mathcal{M}}
+\newcommand{\WM}{\widetilde{\mathcal{M}}}
+\newcommand{\NLIP}{\overline{L} \in \mathcal{P}}
+\newcommand{\LIP}{L \in \mathcal{P}}
+\newcommand{\LNIP}{L \notin \mathcal{P}}
+\newcommand{\LINP}{L \in \mathcal{NP}}
+\newcommand{\LNINP}{L \notin \mathcal{NP}}
+\newcommand{\WIL}{w \in L}
+\newcommand{\WNIL}{w \notin L}
+\newcommand{\Time}{c \cdot p(|w|)}
+\usepackage{amsthm}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}
+\newtheorem*{assumption*}{\assumptionnumber}
+\providecommand{\assumptionnumber}{}
+\makeatletter
+\newenvironment{assumption}[2]
+ {%
+  \renewcommand{\assumptionnumber}{Assumption #1}%
+  \begin{assumption*}%
+  \protected@edef\@currentlabel{#1}%
+ }
+ {%
+  \end{assumption*}
+ }
+\makeatother
+\usepackage{amsthm}
 
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
 
+\newtheorem{corollary}{Corollary}[theorem]
 
-\title{A template for the \emph{arxiv} style}
+\def\ra{\rightarrow}
+\def\Ra{\Rightarrow}
+\def\ov{\overline}
+\def\CC{\mathbb{C}}
+\def\RR{\mathbb{R}}
+\def\EE{\mathbb{E}}
+\def\DD{\mathbb{D}}
+\def\NN{\mathbb{N}}
+\def\QQ{\mathbb{Q}}
+\def\ZZ{\mathbb{Z}}
+\def\eps{\varepsilon}
+%\usepackage[linesnumbered, ruled, vlined, noresetcount]{algorithm2e}
+\usepackage{epsfig}
 
-\author{ David S.~Hippocampus\thanks{Use footnote for providing further
-		information about author (webpage, alternative
-		address)---\emph{not} for acknowledging funding agencies.} \\
-	Department of Computer Science\\
-	Cranberry-Lemon University\\
-	Pittsburgh, PA 15213 \\
-	\texttt{hippo@cs.cranberry-lemon.edu} \\
-	%% examples of more authors
-	\And
-	Elias D.~Striatum \\
-	Department of Electrical Engineering\\
-	Mount-Sheikh University\\
-	Santa Narimana, Levand \\
-	\texttt{stariate@ee.mount-sheikh.edu} \\
-	%% \AND
-	%% Coauthor \\
+\renewcommand{\headeright}{Draft}
+\renewcommand{\undertitle}{Draft}
+
+\title{Optimal Gradient Sliding for Saddle Point Problems}
+
+\author{ Antyshev Tikhon\\
+	MIPT\\
+	\texttt{antyshev.tg@phystech.edu}
+\And
 	%% Affiliation \\
 	%% Address \\
-	%% \texttt{email} \\
-	%% \And
-	%% Coauthor \\
-	%% Affiliation \\
+	%% \texttt{} \\
+	  Ekaterina Borodich\\
+	  MIPT\\
 	%% Address \\
-	%% \texttt{email} \\
+	 \texttt{borodich.ed@phystech.edu} \\
 	%% \And
 	%% Coauthor \\
 	%% Affiliation \\
@@ -50,7 +99,7 @@
 }
 \date{}
 
-\renewcommand{\shorttitle}{\textit{arXiv} Template}
+\renewcommand{\shorttitle}{SP Gradient Sliding}
 
 %%% Add PDF metadata to help others organize their library
 %%% Once the PDF is generated, you can check the metadata with
@@ -58,101 +107,150 @@
 \hypersetup{
 pdftitle={A template for the arxiv style},
 pdfsubject={q-bio.NC, q-bio.QM},
-pdfauthor={David S.~Hippocampus, Elias D.~Striatum},
-pdfkeywords={First keyword, Second keyword, More},
+pdfauthor={Antyshev Tikhon},
+pdfkeywords={SP Gradient Sliding},
 }
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-	\lipsum[1]
+In this paper we expand the algorithm proposed in \cite{KovBorGas2022} to Saddle Point Problems from \cite{KovGas2022}. 
+ In this paper, we expand algorithm proposed in the paper \cite{KovBorGas2022} using a FOAM algorithm described in \cite{KovGas2022} in order to create Optimal Gradient Sliding for Saddle Point Problems.
 \end{abstract}
 
 
-\keywords{First keyword \and Second keyword \and More}
+\keywords{Gradient Sliding, Saddle Point Problem }
 
 \section{Introduction}
-\lipsum[2]
-\lipsum[3]
-
-\section{Headings: first level}
-\label{sec:headings}
-
-\lipsum[4] See Section \ref{sec:headings}.
-
-\subsection{Headings: second level}
-\lipsum[5]
+We consider a variant of minimax optimization problem in the form:
 \begin{equation}
-	\xi _{ij}(t)=P(x_{t}=i,x_{t+1}=j|y,v,w;\theta)= {\frac {\alpha _{i}(t)a^{w_t}_{ij}\beta _{j}(t+1)b^{v_{t+1}}_{j}(y_{t+1})}{\sum _{i=1}^{N} \sum _{j=1}^{N} \alpha _{i}(t)a^{w_t}_{ij}\beta _{j}(t+1)b^{v_{t+1}}_{j}(y_{t+1})}}
+    \min\limits_{x \in \mathbb{R}^{d_x}}\max\limits_{y \in \mathbb{R}^{d_y}}f(x) + F(x, y)
 \end{equation}
 
-\subsubsection{Headings: third level}
-\lipsum[6]
-
-\paragraph{Paragraph}
-\lipsum[7]
+where $$
 
 
+Saddle point problems are a class of optimization problems that arise in a variety of applications, including game theory, economics, and machine learning. In these problems, the objective function has a saddle point, which is a point where the gradient is zero in one direction and nonzero in another direction. Saddle point problems are notoriously difficult to solve, and existing optimization methods often suffer from slow convergence or instability.
 
-\section{Examples of citations, figures, tables, references}
-\label{sec:others}
+In recent years, there has been growing interest in developing new optimization methods for solving saddle point problems. One promising approach is to use first-order optimization methods that combine gradient descent with proximal operators and dual variables. These methods have been shown to be effective in solving convex optimization problems, and can be adapted to handle saddle point problems.
 
-\subsection{Citations}
-Citations use \verb+natbib+. The documentation may be found at
-\begin{center}
-	\url{http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf}
-\end{center}
+\subsection{Main Contributions}
 
-Here is an example usage of the two main commands (\verb+citet+ and \verb+citep+): Some people thought a thing \citep{kour2014real, hadash2018estimate} but other people thought something else \citep{kour2014fast}. Many people have speculated that if we knew exactly why \citet{kour2014fast} thought this\dots
+\subsection{Related Works}
 
-\subsection{Figures}
-\lipsum[10]
-See Figure \ref{fig:fig1}. Here is how you add footnotes. \footnote{Sample of the first footnote.}
-\lipsum[11]
-
-\begin{figure}
-	\centering
-	\includegraphics[width=0.5\textwidth]{../figures/log_reg_cs_exp.eps}
-	\caption{Sample figure caption.}
-	\label{fig:fig1}
-\end{figure}
-
-\subsection{Tables}
-See awesome Table~\ref{tab:table}.
-
-The documentation for \verb+booktabs+ (`Publication quality tables in LaTeX') is available from:
-\begin{center}
-	\url{https://www.ctan.org/pkg/booktabs}
-\end{center}
+\todo{rewrite and add stuff}
 
 
-\begin{table}
-	\caption{Sample table title}
-	\centering
-	\begin{tabular}{lll}
-		\toprule
-		\multicolumn{2}{c}{Part}                   \\
-		\cmidrule(r){1-2}
-		Name     & Description     & Size ($\mu$m) \\
-		\midrule
-		Dendrite & Input terminal  & $\sim$100     \\
-		Axon     & Output terminal & $\sim$10      \\
-		Soma     & Cell body       & up to $10^6$  \\
-		\bottomrule
-	\end{tabular}
-	\label{tab:table}
-\end{table}
-
-\subsection{Lists}
-\begin{itemize}
-	\item Lorem ipsum dolor sit amet
-	\item consectetur adipiscing elit.
-	\item Aliquam dignissim blandit est, in dictum tortor gravida eget. In ac rutrum magna.
-\end{itemize}
 
 
-\bibliographystyle{unsrtnat}
-\bibliography{references}
+\section{Preliminaries}
 
+
+\begin{assumption}{1}{} \label{1A}
+
+\end{assumption}
+
+\begin{assumption}{2}{}\label{2A}
+
+\end{assumption}
+
+
+
+\section{Gradient Sliding}
+\begin{lemma}\label{1L}
+\end{lemma}
+
+
+
+\section{FOAMed Sliding}
+In this section we present modified Accelerated Extragradient algorithm for solving SP problems.
+\begin{algorithm}[h]
+\caption{FOAMed AE}\label{alg:cap}
+\hspace*{\algorithmicindent} \textbf{Input:} $x^0 = x^0_f \in \mathbb{R}^{d_x}, \, y^0 = y^0_f \in \mathbb{R}^{d_y}$ \\
+\hspace*{\algorithmicindent} \textbf{Parameters:} $\tau \in (0,1), \, \eta_x, \eta_y,\, \theta,\, \alpha>0,\, K \in $ \{1,2,...\} + FOAM parameters
+
+\begin{algorithmic}[1]
+
+\For{$k=0,1,2\ldots,K-1$}
+
+\State{($x^k_g, y^k_g) = \tau(x^k, y^k) + (1- \tau)(x^k_f, y^k_f)$}
+
+\State{$(x_f^{k+1}, y_f^{k+1}) = $ FOAM$\left(C_{\theta}^k(x,y),\, x^k_g,\, y^k_g, \eps_k\right)$ } \Comment{$\textrm{where } C_{\theta}^k(x,y) = f(x^k_g) + \langle \nabla f(x^k_g), x - x_k^g \rangle + \frac{1}{2\theta} \Vert x-x^k_g \Vert^2 + F(x, y)$}
+
+\State{$x^{k+1} = x^{k} + \eta\alpha(x^{k+1}_f - x^k) - \eta\nabla_x\left(f(x^{k+1}_f) + F\left(x^{k+1}_f,y^{k+1}_f\right)\right)$}
+
+\State{$y^{k+1} = y^{k} + \eta\alpha(y^{k+1}_f - y^k) + \eta\nabla_y\ F\left(x^{k+1}_f,y^{k+1}_f\right)$}
+
+\EndFor
+\end{algorithmic}
+\hspace*{\algorithmicindent} \textbf{Output:} $(x^k, y^k)$
+\end{algorithm}
+
+An important note is that the following theorem is correct if $F(x,y)$ satisfies Danskin's Theorem differentiablity condition.
+
+\begin{theorem}\label{FOAMAEconv}
+yada-yada it converges with [insert convergence rate]
+\end{theorem}
+\begin{proof}
+In order to be able to use all of the previously proven convergence theorems we will need to modify their criterion. Original Accelerated Extragradient algorithm would require FOAM to achieve the following condition:
+\[
+\Vert \nabla A^k_\theta(x^{k+1}_f) \Vert^2 \leq \frac{L_f^2}{3}\Vert x^k_g - \arg\min\limits_{x \in \RR^{d_x}} A^k_\theta(x) \Vert 
+\]
+and in our case:
+\[
+A^k_\theta(x) = f(x^k_g) + \langle \nabla f(x^k_g), x - x_k^g \rangle + \frac{1}{2\theta} \Vert x-x^k_g \Vert^2 + \max\limits_{y \in \RR^{d_y}}F(x, y)
+\]
+The FOAM algorithm is capable to produce an epsilon-accurate solution of the minimax problem for $C^k_\theta$, the epsilon-accurate solution is understood in the following terms:
+\[
+\Vert x - x^* \Vert^2 + \Vert y - y^* \Vert^2 \leq \eps
+\]
+After differentiating $A^k_\theta(x)$ we will receive:
+\[
+\nabla A^k_\theta(x) = \nabla f(x^k_g) + 2L_f( x - x^k_g) + \nabla_x F(x, \overline{y})
+\]
+
+Since $F(x,y)$ satisfies Danskin's Theorem and convergence Theorwm requires $\theta = \frac{1}{2L_f}$. Suppose that the FOAM algorithm returned values $(x_f, y_f)$, which are the epsilon-accurate solution to the minimax problem, then they should be achieved with such accuracy $\eps_k$, that:
+\[
+\Vert \nabla f(x^k_g) + 2L_f (x_f - x^k_g)+ \nabla_x F(x_f, \overline{y}) \Vert^2 \leq \frac{L_f^2}{3}\Vert x^k_g - x^* \Vert^2 
+\]
+
+\[
+\Vert \nabla f(x^k_g) + 2L_f (x_f - x^k_g)+ \nabla_x F(x_f, \overline{y}) \Vert^2 =  \Vert \nabla f(x^k_g) + 2L_f (x_f - x^* +x^* - x^k_g) + \nabla_x F(x_f, \overline{y}) - \nabla_x F(x^*, \overline{y}) + \nabla_x F(x^*, \overline{y}) \Vert^2 \leq
+\]
+\[
+\leq \Vert \nabla f(x^k_g) + 2L_f(x^* - x^k_g) + \nabla_x F(x^*, \overline{y}) \Vert^2 + \Vert 2L_f (x_f - x^*)\Vert^2 + \Vert \nabla_x F(x_f, \overline{y}) - \nabla_x F(x^*, \overline{y}) \Vert^2 +
+\]
+\[
++ 2\Vert \nabla f(x^k_g) + 2L_f(x^* - x^k_g) + \nabla_x F(x^*, \overline{y}) \Vert \Vert 2L_f (x_f - x^*) \Vert + 2\Vert  \nabla f(x^k_g) + 2L_f(x^* - x^k_g) + \nabla_x F(x^*, \overline{y}) \Vert \Vert \nabla_x F(x_f, \overline{y}) -
+\]
+\[
+ - \nabla_x F(x^*, \overline{y}) \Vert + 2\Vert 2L_f (x_f - x^*) \Vert \Vert \nabla_x F(x_f, \overline{y}) - \nabla_x F(x^*, \overline{y})\Vert \leq
+\]
+\[
+\leq \Vert \nabla f(x^k_g) + 2L_f(x^* - x^k_g) + \nabla_x F(x^*, \overline{y}) \Vert^2   + 4L_f^2\eps_k + L_F^2\eps_k + 2\Vert \nabla f(x^k_g) + 2L_f(x^* - x^k_g) + \nabla_x F(x^*, \overline{y}) \Vert \cdot 
+\]
+\[
+\cdot \left(2L_f\sqrt{\eps_k} + L_F\sqrt{\eps_k} \right) +4L_fL_F\eps_k = \left(\Vert \nabla f(x^k_g) + 2L_f(x^* - x^k_g) + \nabla_x F(x^*, \overline{y}) \Vert + (2L_f+L_F)\sqrt{\eps_k} \right)^2 \leq
+\]
+\[
+\leq \frac{L_f^2}{3}\Vert x^k_g - x^* \Vert^2
+\]
+\[
+\Vert \nabla f(x^k_g) + 2L_f(x^* - x^k_g) + \nabla_x F(x^*, \overline{y}) \Vert + (2L_f+L_F)\sqrt{\eps_k} \leq \frac{L_f}{\sqrt{3}}\Vert x^k_g - x^* \Vert
+\]
+\[
+\eps_k \leq \left(\frac{L_f}{\sqrt{3(2L_f + L_F)}}\Vert x^k_g - x^* \Vert - \frac{1}{2L_f + L_F}\Vert \nabla f(x^k_g) + 2L_f(x^* - x^k_g) + \nabla_x F(x^*, \overline{y}) \Vert \right)^2
+\]
+
+\end{proof}
+
+\newpage
+
+\bibliographystyle{plain}
+\bibliography{Ref}
+
+\pagebreak
+\section{Proof of Lemmas}
+\section{Proof of Theorems}
 \end{document}

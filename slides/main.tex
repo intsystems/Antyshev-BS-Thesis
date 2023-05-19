@@ -1,192 +1,201 @@
-\documentclass[10pt,pdf,hyperref={unicode}]{beamer}
-
-\mode<presentation>
-{
-\usetheme{boxes}
+\documentclass{beamer}
 \beamertemplatenavigationsymbolsempty
-
+\usecolortheme{beaver}
+\setbeamertemplate{blocks}[rounded=true, shadow=true]
 \setbeamertemplate{footline}[page number]
-\setbeamersize{text margin left=0.5em, text margin right=0.5em}
-}
-
+%
 \usepackage[utf8]{inputenc}
-\usepackage[english, russian]{babel}
-\usepackage{bm}
-\usepackage{multirow}
-\usepackage{ragged2e}
-\usepackage{indentfirst}
-\usepackage{multicol}
+\usepackage[demo]{graphicx}
+\usepackage[english]{babel}
+\usepackage{amssymb,amsfonts,amsmath,mathtext}
 \usepackage{subfig}
-\usepackage{amsmath,amssymb}
-\usepackage{enumerate}
-\usepackage{mathtools}
+\usepackage[all]{xy} % xy package for diagrams
+\usepackage{natbib}
+\usepackage{array}
 \usepackage{comment}
-\usepackage{multicol}
+\usepackage{multicol}% many columns in slide
+\usepackage{hyperref}% urls
+\usepackage{hhline}%tables
+% Your figures are here:
+\graphicspath{ {fig/} {../fig/} }
 
-\usepackage[all]{xy}
-
-\usepackage{tikz}
-\usetikzlibrary{positioning,arrows}
-
-\tikzstyle{name} = [parameters]
-\definecolor{name}{rgb}{0.5,0.5,0.5}
-
-\usepackage{caption}
-\captionsetup{skip=0pt,belowskip=0pt}
-
-\newtheorem{rustheorem}{Теорема}
-\newtheorem{russtatement}{Утверждение}
-\newtheorem{rusdefinition}{Определение}
-
-% colors
-\definecolor{darkgreen}{rgb}{0.0, 0.2, 0.13}
-\definecolor{darkcyan}{rgb}{0.0, 0.55, 0.55}
-
-\AtBeginEnvironment{figure}{\setcounter{subfigure}{0}}
-
-\captionsetup[subfloat]{labelformat=empty}
+\newcommand{\upperRomannumeral}[1]{\uppercase\expandafter{\romannumeral#1}}
 
 %----------------------------------------------------------------------------------------------------------
+\begin{comment}
+\title[\hbox to 56mm{Feature generation}]{Feature generation for classification and forecasting problems}
+\author[N.\,P.~Ivkin]{Nikita Ivkin}
+\institute{Moscow Institute of Physics and Technology}
+\date{\footnotesize
+\par\smallskip\emph{Course:} My first scientific paper\par (Strijov's practice)/Group 874 %821, 813
+\par\smallskip\emph{Expert:} I.\,F.~Anny
+\par\smallskip\emph{Consultant:} I.\,O.~Gordeos
+\par\bigskip\small 2021}
+\end{comment}
 
-\title[Пример слайдов по работе]{Пример слайдов по работе \\ курса}
-\author{И.\,О.\,Фамилия}
+\title[]{Gradient Sliding for SP with one composite}
+\author{By Antyshev Tikhon \\$4^{\text{th}}$ year MIPT DCAM IS student}
 
-\institute[]{Московский физико-технический институт}
-\date[2022]{\small 10\;февраля\;2022\,г.}
+
+\date[]{2023}
 
 %---------------------------------------------------------------------------------------------------------
 \begin{document}
 
 \begin{frame}
-\titlepage
+\thispagestyle{empty}
+\maketitle
 \end{frame}
+
 
 %----------------------------------------------------------------------------------------------------------
-\section{Слайд об исследованиях}
-\begin{frame}{Слайд об исследованиях}
-\bigskip
-Исследуется проблема \ldots.
-\begin{block}{Цель исследования~---}
-предложить метод \ldots.
-\end{block}
-\begin{block}{Требуется предложить}
-\justifying
-\begin{enumerate}[1)]
-\item метод \ldots,
-\item метод \ldots,
-\item метод \ldots.
-\end{enumerate}
-\end{block}
-\begin{block}{Решение}
-Для \ldots.
-\end{block}
+
+\begin{frame}{Establishing goals}
+\begin{itemize}
+    \item We consider following saddle point problem with one composite:
+\begin{equation*}
+    \min\limits_{x }\max\limits_{y} F(x, y) + f(x)
+\end{equation*}
+where functions $f(x)$ and $F(x,y)$ are correspondingly $L_f$ and $L_F$ Lipshitz continuous
+
+\vspace{0.2in}
+
+\item We also consider the sum of the two functions to be $\mu_x$ and $\mu_y$ strongly convex
+
+%\item Federated Learning avoids centralized data-storing and instead %relies on clients for greater energy efficiency and privacy.
+\end{itemize}
+%\begin{block}{Project goal}
+%The goal of the project is solving the problem using Local SGD and %compare it to the Federated Random Reshuffling.
+%\end{block}
+
+\end{frame}
+%-----------------------------------------------------------------------------------------------------
+\begin{frame}{Gradient Sliding}
+    \begin{itemize} 
+        \item The first step is to use the gradient sliding algorithm (\cite{KovBorGas2022}). 
+
+        \vspace{0.2in}
+
+        \item The oracle of $\nabla f(x)$ will be called $\tilde{\mathcal{O}}\left( \sqrt{\frac{L_f}{\mu_x}}\right)$
+
+        \end{itemize}
+        \vspace{0.2in}
+
+\textbf{Problem:} we need to solve a suboptimization task.
+    
+\end{frame}
+%-----------------------------------------------------------------------------------------------------
+\begin{frame}{FOAM}
+The gradient sliding produces the following suboptimization task:
+\[\min\limits_{x }\max\limits_{y} \left(\langle \nabla f(x^k_g), x - x_g^k \rangle +  \Vert x-x^k_g \Vert^2 + F(x, y)\right)\]
+\begin{itemize}
+    \item The complexity of this task via FOAM (\cite{KovGas2022}) is $\tilde{\mathcal{O}}\left(\frac{L_F}{\sqrt{(L_f + \mu_x)\cdot \mu_y}}\right)$
+\end{itemize}
 \end{frame}
 
-%---------------------------------------------------------------------------------------------------------
-\section{Постановка задачи \ldots}
-\begin{frame}{Постановка задачи \ldots}
-Заданы
-\begin{enumerate}[1)]
-    \item признаки \ldots,
-    \item целевая переменная \ldots,
-    \item \ldots.
-\end{enumerate}
 
-\ldots
-
-\bigskip
-
-Требуется выбрать модель \ldots из множества
-\[
-	\mathfrak{G} = \left\{\mathbf{g}| \mathbf{g}:\mathbb{R}^{n} \to \mathbb{Y}^\prime\right\}.
-\]
-Оптимизационная задача \ldots:
-\[
-	\mathbf{g} = \arg\min_{\mathbf{g} \in \mathfrak{G}} \mathcal{L}\bigr(\ldots\bigr),
-\]
-где $\mathcal{L}$~--- функция ошибки.
-
-\bigskip
-\footnotetext[1]{\textit{Lopez-Paz D., Bottou L., Scholkopf B., Vapnik V.} Unifying distillation and privileged information // ICLR, 2016.}
-\footnotetext[2]{\textit{Hinton G., Vinyals O., Dean J.} Distilling the knowledge in a neural network // NIPS, 2015.}
-\end{frame}
 
 %----------------------------------------------------------------------------------------------------------
-\section{Предложенный метод \ldots}
-\begin{frame}{Предложенный метод \ldots}
-~\\[-1mm]
-Заданы
-\begin{enumerate}[1)]
-	\item \ldots,
-	\item \ldots.
-\end{enumerate}
 
-\medskip
-Параметрические семейства:
-\[
-\setlength\abovedisplayskip{0pt}
-\mathfrak{F} = \left\{\mathbf{f}| \mathbf{f} = \text{softmax}\bigr(\mathbf{v}\bigr(\mathbf{x}\bigr)/T\bigr), \quad \mathbf{v}: \mathbb{R}^{n} \to \mathbb{R}^K \right\},
-\]
-\[
-\mathfrak{G} = \left\{\mathbf{g}| \mathbf{g} = \text{softmax}\bigr(\mathbf{z}\bigr(\mathbf{x}\bigr)/T\bigr), \quad \mathbf{z}: \mathbb{R}^n \to \mathbb{R}^K \right\},
-\]
-где~\ldots.
+\begin{frame}{Final complexity}
+The final oracle complexity for $\nabla F$ can now be calculated:
+\[\tilde{\mathcal{O}}\left( \sqrt{\frac{L_f}{\mu_x}}\right) \cdot \tilde{\mathcal{O}}\left(\frac{L_F}{\sqrt{(L_f + \mu_x)\cdot \mu_y}}\right) = \tilde{\mathcal{O}}\left(\frac{L_f}{\mu_x\mu_y} \right)\]
 
-\medskip
-Функция ошибки
-\[
-\setlength\abovedisplayskip{0pt}
-\begin{aligned}
-   \mathcal{L}\bigr(\mathbf{g}\bigr) = &-\sum_{i=1}^{m}\underbrace{{\sum_{k=1}^{K}y^k_i\log\mathbf{g}\bigr(\mathbf{x}_i\bigr)\bigr|_{T=1}}}_{\text{исходная функция потерь}}- \sum_{i=1}^{m}\underbrace{{\sum_{k=1}^{K}\mathbf{f}\bigr(\mathbf{x}_i\bigr)\bigr|_{T=T_0}\log\mathbf{g}\bigr(\mathbf{x}_i\bigr)\bigr|_{T=T_0}}}_{\text{слагаемое дистилляции}},
-\end{aligned}
-\setlength\belowdisplayskip{0pt}
-\]
-где~\ldots.
-
-Оптимальная модель выбирается из класса,
-$\hat{\mathbf{g}} = \arg\min\limits_{\mathbf{g} \in \mathfrak{G}_{\text{cl}}} \mathcal{L}\bigr(\mathbf{g}\bigr).$
 \end{frame}
 
-%----------------------------------------------------------------------------------------------------------
-\section{Анализ предложенного метода \ldots}
-\begin{frame}{Анализ предложенного метода \ldots}
-\justifying
 
-На графике показана зависимость значения параметров$w_i$ в зависимости от параметра~$l_1$-регуляризации~$C$.
-\begin{figure}[h!]
-\includegraphics[width=0.45\textwidth]{../figures/log_reg_cs_exp.eps}
-\includegraphics[width=0.45\textwidth]{../figures/log_reg_cs_exp.eps}
+
+%----------------------------------------------------------------------------------------------------------
+
+\begin{frame}{The Experiment }
+The test is performed on a Bilinear Quadratic SP.
+\[\min_x \max_y \left(\underbrace{p(x)} + <y, Ax> - g(y)\right)\]
+
+
+\begin{figure}
+\centering
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=.99\linewidth]{bilin.png}
+  \captionof{figure}{Visualized results}
+  \label{fig:test1}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  
+\end{minipage}
 \end{figure}
 
-С увеличением параметра регуляризации~$C$ число ненулевых параметров~$w_i$ уменьшается.
+
+
 
 \end{frame}
 
+
+\begin{frame}{Conclusion}
+\begin{itemize}
+\item A comparison with other methods is necessary
+
+\item Run method on more SP tasks
+
+\item The theory needs to be finished
+\end{itemize}
+
+
+
+\end{frame}
+
+
+
+
+
 %----------------------------------------------------------------------------------------------------------
-\section{Выводы}
-\begin{frame}{Выводы}
-\justifying
-	\begin{enumerate}
-	\justifying
-	    \item Предложен \ldots.
-        \item Доказаны теоремы \ldots, 
-        \begin{itemize}
-            \item[---] \ldots,
-            \item[---] \ldots.
-        \end{itemize}
-        \item Предложен метод \ldots
-        \begin{itemize}
-            \item[---] \ldots,
-            \item[---] \ldots.
-        \end{itemize}
-        \item Предложены методы \ldots
-        \begin{itemize}
-            \item[---] \ldots,
-            \item[---] \ldots.
-        \end{itemize}
-        \item Предложена вероятностная интерпретации \ldots.
-	\end{enumerate}
+
+\begin{frame}{References}
+\nocite{*}
+{\small
+\bibliographystyle{unsrtnat}
+\bibliography{references.bib}
+}
 \end{frame}
 %----------------------------------------------------------------------------------------------------------
 
+
+%----------------------------------------------------------------------------------------------------------
+
+%\begin{frame}{Research proposal}
+%\nocite{*}
+%{\small
+%\bibliographystyle{unsrtnat}
+%\bibliography{references.bib}
+%}
+%
+%\end{frame}
+%----------------------------------------------------------------------------------------------------------
+\begin{comment}
+
+\begin{frame}{Solution}
+
+\begin{columns}[c]
+\column{0.6\textwidth}
+    Column 1
+\column{0.4\textwidth}
+    Column 2
+\end{columns}
+\end{frame}
+
+\end{comment}
+
+%----------------------------------------------------------------------------------------------------------
+\begin{comment}
+\begin{frame}{Conclusion}
+    \begin{block}{Forecast with hierarchical aggregation of}
+    \begin{itemize}
+        \item types of freight in
+        \item stations, regions, and roads,
+        \item for a day, week, month, and quarter.
+    \end{itemize}
+    \end{block}
+\end{frame}
+\end{comment}
+%----------------------------------------------------------------------------------------------------------
 \end{document} 
